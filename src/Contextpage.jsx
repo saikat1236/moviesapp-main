@@ -18,7 +18,10 @@ export function MovieProvider({ children }) {
   const [trending, setTrending] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [page, setPage] = useState(1);
+  const [activegenre, setActiveGenre] = useState(28);
+  const [genres, setGenres] = useState([])
   const [loader, setLoader] = useState(true);
+  const [backgenre, setBackGenre] = useState(false);
   const [user, setUser] = useAuthState(auth)//=======> firebase custom hooks state
   const navigate = useNavigate();// =====> navigate page
 
@@ -32,7 +35,16 @@ export function MovieProvider({ children }) {
   }, [page]);
 
 
-
+  const filteredGenre = async () => {
+    const data = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?with_genres=${activegenre}&api_key=${APIKEY}&with_origin_country=IN&page=${page}`
+    );
+    const filteredGenre = await data.json();
+    setMovies(movies.concat(filteredGenre.results)); // Concat new movies with previous movies, on genre change movies are reset to [] so that only movies of new genre will appear, check out useEffect on top for more information.
+    setTotalPage(filteredGenre.total_pages);
+    setLoader(false);
+    setHeader("Genres");
+  };
 
   const fetchSearch = async (query) => {
     const data = await fetch(
@@ -44,6 +56,13 @@ export function MovieProvider({ children }) {
     setHeader(`Results for "${query}"`);
   }
 
+  const fetchGenre = async () => {
+    const data = await fetch(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${APIKEY}&with_origin_country=IN&language=en-US`
+    );
+    const gen = await data.json();
+    setGenres(gen.genres);
+  }
 
   const fetchTrending = async () => {
     const data = await fetch(
@@ -92,15 +111,22 @@ export function MovieProvider({ children }) {
   return (
     <Contextpage.Provider
       value={{
-
+        fetchGenre,
+        genres,
+        setGenres,
+        filteredGenre,
         header,
         setHeader,
         movies,
         setMovies,
         page,
         setPage,
+        activegenre,
+        setActiveGenre,
         fetchSearch,
         loader,
+        setBackGenre,
+        backgenre,
         setLoader,
         fetchTrending,
         trending,

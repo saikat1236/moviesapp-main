@@ -15,6 +15,12 @@ function Navbar() {
     // console.log(user)
     const Navdata = [
         {
+            id: 1,
+            headername: "Home",
+            Name: "Home",
+            link:"/"
+        },
+        {
             id: 2,
             headername: "Trending Movies",
             Name: "Trending",

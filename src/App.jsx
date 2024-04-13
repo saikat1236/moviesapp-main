@@ -37,7 +37,7 @@ function App() {
       <Navbar />
       <div className="md:ml-[15rem]">
         <Routes>
-          <Route path='/' element={<Trending />} />
+          <Route path='/' element={<Container />} />
           <Route path='/login' element={<Login />} />
           <Route path='/trending' element={<Trending />} />
           <Route path='/upcoming' element={<Upcoming />} />
